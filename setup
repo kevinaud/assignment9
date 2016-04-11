@@ -1,0 +1,37 @@
+#! /usr/bin/bash
+
+read -p "Enter name of project: " name
+
+# replace all instances of '$oldname' in makefile with new name 
+sed -i -e "s/skeleton/$name/g" skeleton.makefile
+
+# replace $oldname in all filenames with user supplied string
+for filename in skeleton*; do newname=`echo $filename | sed "s/skeleton/$name/g"`; mv $filename $newname; done
+
+validInput="false"
+
+while [ $validInput == "false" ]
+do
+	read -p "What C standard would you like? (c89, c99, c11): " version
+
+	if [ $version == "c89" ]
+	then
+		validInput="true"
+		sed -i -e "s/-std=c11/-std=$version/g" $name.makefile
+		sed -i -e "s/-std=c99/-std=$version/g" $name.makefile
+	elif [ $version == "c99" ]
+	then
+		validInput="true"
+		sed -i -e "s/-std=c11/-std=$version/g" $name.makefile
+		sed -i -e "s/-std=c89/-std=$version/g" $name.makefile
+	elif [ $version == "c11" ]
+	then
+		validInput="true"
+		sed -i -e "s/-std=c99/-std=$version/g" $name.makefile
+		sed -i -e "s/-std=c89/-std=$version/g" $name.makefile
+	else
+		echo ""
+		echo "Version not recognized."
+		echo "Please enter 'c89', 'c99', or 'c11'"
+	fi
+done
