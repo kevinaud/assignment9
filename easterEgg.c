@@ -58,7 +58,7 @@ int main(int argc, char* argv[]){
 		else if(pid[i] == 0)
 		{
 			int numfound;
-			numfound = childGetCount(i, filename);
+			numfound = getCountForDir(".", filename, i);
 			exit(numfound);
 		}
 	}
@@ -86,24 +86,6 @@ int main(int argc, char* argv[]){
 /**
  * Function Definitions 
  */
-void CreateBinaryTextFile(char* filename)
-{
-	srand(time(NULL));
-	int randnum;
-	randnum = (rand() % 50);
-
-	FILE *fp;
-	fp=fopen(filename, "wb");
-
-	int i;
-	for(i = 0; i < randnum; i++){
-		int randcolor;
-		randcolor = (rand() % 5);
-		printf("%d\n", randcolor);
-		fwrite(&randcolor, 1, sizeof(randcolor), fp);
-	}
-}
-
 int getIntFromBinaryFile(FILE* binaryFile)
 {
 	int buffer[1];
@@ -131,20 +113,6 @@ char* getFilename(int argc, char** argv)
 	filename = argv[1];
 
 	return filename;
-}
-
-int childGetCount(int color, char* filename)
-{
-	int count;
-	char* cwd;
-	cwd = malloc(sizeof(char) * 1024);
-	cwd = getcwd(cwd, 1024);
-
-	count = getCountForDir(cwd, filename, color);
-
-	free(cwd);
-
-	return count;
 }
 
 int getCountForDir(char* dirpath, char* filename, int color)
