@@ -11,9 +11,6 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-#define MAX_COUNT 200
-#define BUF_SIZE 100
-
 /**
  * Project Specific Functions
  */
