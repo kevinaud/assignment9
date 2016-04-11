@@ -86,6 +86,17 @@ int main(int argc, char* argv[]){
 /**
  * Function Definitions 
  */
+/*******************************************************************************
+ * Name:			getIntFromBinaryFile
+ * Description:		Reads a single interger from a binary file
+ *
+ * Input:
+ * 		binaryFile	File handle to a previously opened binary file
+ *
+ * Output:
+ * 		return		if an integer is successfully read, it is returned,
+ * 					otherwise -1 is returned
+ ******************************************************************************/
 int getIntFromBinaryFile(FILE* binaryFile)
 {
 	int buffer[1];
@@ -96,6 +107,20 @@ int getIntFromBinaryFile(FILE* binaryFile)
 		return -1;
 }
 
+/*******************************************************************************
+ * Name:			getFilename
+ * Description:		Checks if the user passed the correct number of parameters
+ * 					on the command line. If they did, it returns a pointer to
+ * 					the filename that the user passed.
+ *
+ * Input:
+ * 		argc		int for the number of command line params passed in
+ * 		argv		array of cstrings containing the command line params that 
+ * 					were passed in
+ *
+ * Output:
+ * 		return		pointer to the filename that the user passed in
+ ******************************************************************************/
 char* getFilename(int argc, char** argv)
 {
 	if(argc < 2)
@@ -115,6 +140,27 @@ char* getFilename(int argc, char** argv)
 	return filename;
 }
 
+/*******************************************************************************
+ * Name:			getCountForDir
+ * Description:		Recursive function that first checks if the desired file is
+ * 					present in the directory being processed. If so, it gets
+ * 					the count for the specified color from the file. Next, it
+ * 					checks if the directory being processed has any sub
+ * 					directories. If it does, then getCountForDir is called on
+ * 					each of the sub directories. It not, it returns the current
+ * 					count.
+ *
+ * Input:
+ * 		dirpath		character array containing the path to the directory to 
+ * 						process
+ * 		filename	character array containing the name of the file to search
+ * 						for
+ * 		color		int containing the color to search for 
+ *
+ * Output:
+ * 		return		the count for all files in the current directory and all
+ * 					subdirectories
+ ******************************************************************************/
 int getCountForDir(char* dirpath, char* filename, int color)
 {
 	int i;
@@ -144,6 +190,19 @@ int getCountForDir(char* dirpath, char* filename, int color)
 	return count;
 }
 
+/*******************************************************************************
+ * Name:			isInDir
+ * Description:		checks if the specified file is present in the specified
+ * 					directory
+ *
+ * Input:
+ * 		filename	character array with the filename to look for
+ * 		dirpath		character array with the path to the directory to check
+ *
+ * Output:
+ * 		return		int that is either 1 if the file is present in the
+ * 					directory, or 0 if the file is not present in the directory
+ ******************************************************************************/
 int isInDir(char* filename, char* dirpath)
 {
 	int wasFound;
@@ -159,6 +218,20 @@ int isInDir(char* filename, char* dirpath)
 	return wasFound;
 }
 
+/*******************************************************************************
+ * Name:			addToPath
+ * Description:		concatenates a directory path and a sub directory path or 
+ * 					filename, inserting a '/' between them
+ *
+ * Input:
+ * 		dirpath		character array containing the path to the parent directory
+ * 		subpath		character array containing the path to the sub directory or
+ * 						filename to append to the parent directory
+ *
+ * Output:
+ * 		return		pointer to a character array containing the concatenated
+ * 						directory path
+ ******************************************************************************/
 char* addToPath(char* dirpath, char* subpath)
 {
 	char* path;
@@ -174,6 +247,20 @@ char* addToPath(char* dirpath, char* subpath)
 	return path;
 }
 
+/*******************************************************************************
+ * Name:			getCountForFile
+ * Description:		counts the number of times that the integer representation 
+ * 					of the specified color is present in the specified binary
+ * 					file
+ *
+ * Input:
+ * 		filepath	character array containing the path to the file to get the
+ * 					count for
+ * 		color		int which should be between 0-4, representing a color
+ *
+ * Output:
+ * 		return		int holding the number of times the color was found
+ ******************************************************************************/
 int getCountForFile(char* filepath, int color)
 {
 	FILE *fp;
@@ -195,7 +282,24 @@ int getCountForFile(char* filepath, int color)
 	return count;
 }
 
-int getSubdirs(char* dirpath, char*** subdirsNames)
+/*******************************************************************************
+ * Name:			getSubdirs
+ * Description:		Iterates through the contents of the specified directory
+ * 					and builds a two dimensional character array containing the
+ * 					paths for all sub directories, as well as counting the
+ * 					number of subdirectories.
+ *
+ * Input:
+ * 		dirpath		character array containing the path to the directory to 
+ * 						process
+ * 		subdirNames	address of a char pointer-pointer to insert the sub
+ * 						directory paths in to
+ *
+ * Output:
+ * 		return		int for the number of sub directories in the specified 
+ * 						directory
+ ******************************************************************************/
+int getSubdirs(char* dirpath, char*** subdirNames)
 {
 	DIR* dirp;
 	DIR* subdir;
@@ -247,11 +351,27 @@ int getSubdirs(char* dirpath, char*** subdirsNames)
 			closedir(dirp);
 		}
 	} while(dp);
-	*subdirsNames = subdirs;
+	*subdirNames = subdirs;
 
 	return count;
 }
 
+/*******************************************************************************
+ * Name:			expandSubdirArray
+ * Description:		allocates additional memory for a two dimensional array of
+ * 					characters by copying the original contents into a temporary
+ * 					array, freeing the original array, allocating additional
+ * 					memory for the original array, and then copying the original
+ * 					contents back into the expanded array
+ *
+ * Input:
+ * 		subdirs		address of the two dimensional character array to allocate
+ * 						additional memory for
+ * 		cap			int containing the current capacity of the 2-d char array
+ *
+ * Output:
+ * 		return		void
+ ******************************************************************************/
 void expandSubdirArray(char*** subdirs, int cap)
 {
 	char** temp;
